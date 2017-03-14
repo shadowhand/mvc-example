@@ -1,0 +1,25 @@
+{
+    "name": "cove/cove",
+    "description": "A pure MVC microframework for PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Woody Gilk",
+            "email": "woody.gilk@gmail.com"
+        }
+    ],
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.6",
+        "equip/dispatch": "^0.3.0",
+        "rdlowrey/auryn": "^1.4"
+    },
+    "require-dev": {
+        "eloquent/phony": "^0.14.6",
+        "phpunit/phpunit": "^5.6"
+    }
+}
