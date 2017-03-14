@@ -1,26 +1,28 @@
 <?php
+declare(strict_types=1);
 
 namespace Cove\Example;
 
-use Interop\Http\Factory\ResponseFactoryInterface;
-use Interop\Http\Factory\StreamFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class Welcome
 {
+    /**
+     * @var WelcomeResponder
+     */
+    private $responder;
+
     public function __construct(
-        ResponseFactoryInterface $responseFactory,
-        StreamFactoryInterface $streamFactory
+        WelcomeResponder $responder
     ) {
-        $this->responseFactory = $responseFactory;
-        $this->streamFactory = $streamFactory;
+        $this->responder = $responder;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $name = $request->getAttribute('name', 'world');
-        $body = $this->streamFactory->createStream("Hello, $name!");
 
-        return $this->responseFactory->createResponse()->withBody($body);
+        return $this->responder->sayHello($name);
     }
 }
