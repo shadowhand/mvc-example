@@ -1,6 +1,6 @@
 {
     "name": "cove/cove",
-    "description": "A pure MVC microframework for PHP",
+    "description": "A minimalist framework built around modern standards",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -15,11 +15,26 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.6",
-        "equip/dispatch": "^0.3.0",
+        "http-interop/http-factory": "^0.2.0",
+        "nikic/fast-route": "^1.2",
         "rdlowrey/auryn": "^1.4"
     },
     "require-dev": {
         "eloquent/phony": "^0.14.6",
+        "filp/whoops": "^2.1",
+        "http-interop/http-factory-diactoros": "^0.2.0",
         "phpunit/phpunit": "^5.6"
+    },
+    "autoload": {
+        "files": ["src/functions.php"],
+        "psr-4": {
+            "Cove\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cove\\": "tests/",
+            "Cove\\Example\\": "example/src/"
+        }
     }
 }
