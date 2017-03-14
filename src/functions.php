@@ -1,13 +1,25 @@
 <?php
+declare(strict_types=1);
 
 namespace Cove;
 
+use Auryn\Injector;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @return void
  */
-function send(ResponseInterface $response)
+function inject(Injector $injector, array $configs): void
+{
+    foreach ($configs as $config) {
+        $injector->make($config)->apply($injector);
+    }
+}
+
+/**
+ * @return void
+ */
+function send(ResponseInterface $response): void
 {
     header(sprintf(
         'HTTP/%s %s %s',
