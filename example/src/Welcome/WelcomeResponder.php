@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Cove\Example;
+namespace Cove\Example\Welcome;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\StreamFactoryInterface;

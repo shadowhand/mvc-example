@@ -21,7 +21,7 @@ class Routing
     {
         // https://github.com/nikic/FastRoute#defining-routes
         return function (RouteCollector $r) {
-            $r->get('/[{name}]', Welcome::class);
+            $r->get('/[{name}]', Welcome\WelcomeController::class);
         };
     }
 

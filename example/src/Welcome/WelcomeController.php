@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Cove\Example;
+namespace Cove\Example\Welcome;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class Welcome
+class WelcomeController
 {
     /**
      * @var WelcomeResponder
