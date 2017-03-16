@@ -9,12 +9,12 @@ use Psr\Http\Message\ResponseInterface;
 class WelcomeController
 {
     /**
-     * @var WelcomeResponder
+     * @var WelcomeView
      */
     private $responder;
 
     public function __construct(
-        WelcomeResponder $responder
+        WelcomeView $responder
     ) {
         $this->responder = $responder;
     }

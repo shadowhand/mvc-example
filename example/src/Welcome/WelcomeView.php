@@ -7,7 +7,7 @@ use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\StreamFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class WelcomeResponder
+class WelcomeView
 {
     /**
      * @var ResponseFactoryInterface
