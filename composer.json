@@ -17,6 +17,7 @@
         "php": ">=7.1",
         "http-interop/http-factory": "^0.2.0",
         "nikic/fast-route": "^1.2",
+        "php-fp/php-fp-either": "^1.0",
         "rdlowrey/auryn": "^1.4"
     },
     "require-dev": {

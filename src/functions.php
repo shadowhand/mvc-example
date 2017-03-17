@@ -3,21 +3,42 @@ declare(strict_types=1);
 
 namespace Cove;
 
-use Auryn\Injector;
+use FastRoute\Dispatcher;
+use PhpFp\Either\Constructor\Left;
+use PhpFp\Either\Constructor\Right;
+use PhpFp\Either\Either;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * @return void
+ * Execute routing with FastRoute
  */
-function inject(Injector $injector, array $configs): void
+function route(ServerRequestInterface $request, Dispatcher $dispatcher): Either
 {
-    foreach ($configs as $config) {
-        $injector->make($config)->apply($injector);
+    // https://github.com/nikic/FastRoute#dispatching-a-uri
+    $route = $dispatcher->dispatch(
+        $request->getMethod(),
+        $request->getUri()->getPath()
+    );
+
+    if ($route[0] === Dispatcher::NOT_FOUND) {
+        return new Left(404);
     }
+
+    if ($route[0] === Dispatcher::METHOD_NOT_ALLOWED) {
+        return new Left(405);
+    }
+
+    // Map the URI parameters into the request.
+    foreach ($route[2] as $name => $value) {
+        $request = $request->withAttribute($name, $value);
+    }
+
+    return new Right(new Dispatch($request, $route[1]));
 }
 
 /**
- * @return void
+ * Send an HTTP response
  */
 function send(ResponseInterface $response): void
 {

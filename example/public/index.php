@@ -1,42 +1,39 @@
 <?php
 
-require __DIR__ . '/../../vendor/autoload.php';
 // In your own application, this would probably be:
 // require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
-// Use awesome dependency injection.
-// https://github.com/rdlowrey/auryn#the-guide
-$injector = new Auryn\Injector();
+// Activate exception handler.
+require __DIR__ . '/../config/errors.php';
 
-// Set the handlers for Whoops, multiple options available:
-// https://github.com/filp/whoops#available-handlers
-$injector->define(Cove\Injection\Whoops::class, [
-    ':handlers' => [
-        // DO NOT USE IN PRODUCTION!
-        Whoops\Handler\PrettyPageHandler::class,
-    ],
-]);
+// Activate dependency injection.
+$injector = require __DIR__ . '/../config/injector.php';
 
-// Apply injector configuration.
-// Each class will be created with Auryn and then executed with the injector.
-Cove\inject($injector, [
-    Cove\Injection\Whoops::class,
-    Cove\Injection\ResolveAuryn::class,
-    Cove\Injection\HttpDiactoros::class,
-    Cove\Injection\ServerRequest::class,
+// https://github.com/nikic/FastRoute#defining-routes
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
+    $r->get('/[{name}]', Cove\Example\Welcome\WelcomeController::class);
+});
 
-    // Replace with your own routing!
-    Cove\Example\Routing::class,
-]);
+// Parse the incoming request.
+$request = $injector->make(Psr\Http\Message\ServerRequestInterface::class);
 
-// Use FastRoute to process the request.
-// This will find the correct request handler and then execute it with request.
-// All classes must use the signature:
-//
-// public function __invoke(ServerRequestInterface $request): Response
-//
-$runner = $injector->make(Cove\FastRoute::class);
-$response = $injector->execute($runner);
+// Define how routing errors will be transformed to Response.
+$errorResponse = function (int $status) use ($injector): Psr\Http\Message\ResponseInterface {
+    $response = $injector->make(Psr\Http\Message\ResponseInterface::class);
+    $response = $response->withStatus($status);
+    return $response;
+};
+
+// Define how valid requests will be transformed to Response.
+$successResponse = function (Cove\Dispatch $dispatch) use ($injector): Psr\Http\Message\ResponseInterface {
+    $handler = $injector->make($dispatch->handler());
+    $response = $handler($dispatch->request());
+    return $response;
+};
+
+// Route the request and get the error or success.
+$response = Cove\route($request, $dispatcher)->either($errorResponse, $successResponse);
 
 // fin.
 Cove\send($response);
