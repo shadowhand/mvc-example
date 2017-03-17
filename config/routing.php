@@ -10,8 +10,11 @@ use function FastRoute\simpleDispatcher;
 return simpleDispatcher(function (RouteCollector $r) {
     $r->get('/', Profile\ProfileController::class);
 
-    $r->get('/login', Login\LoginController::class);
-    $r->post('/login', Login\LoginCompleteController::class);
+    $r->addGroup('/login', function (RouteCollector $r) {
+        $r->get('', Login\LoginController::class);
+        $r->post('', Login\LoginBeginController::class);
+        $r->get('/complete', Login\LoginCompleteController::class);
+    });
 
     $r->post('/logout', Logout\LogoutController::class);
 });

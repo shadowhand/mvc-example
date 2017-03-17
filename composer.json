@@ -15,10 +15,13 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.1",
+        "equip/session": "^2.0",
         "filp/whoops": "^2.1",
         "http-interop/http-factory-diactoros": "^0.2.0",
         "http-interop/response-sender": "^1.0",
+        "josegonzalez/dotenv": "^3.0",
         "league/oauth2-github": "^2.0",
+        "league/plates": "^3.3",
         "rdlowrey/auryn": "^1.4",
         "shadowhand/either-way": "^1.0"
     },

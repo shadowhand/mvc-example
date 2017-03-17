@@ -1,0 +1,30 @@
+<?php $this->layout('layout', ['loggedIn' => true]) ?>
+
+<div class="jumbotron">
+    <h1 class="display-3">MVC to ADR Example</h1>
+    <p class="lead">The source of this application is available on Github.</p>
+    <p><a class="btn btn-lg btn-success" href="https://github.com/shadowhand/mvc-to-adr-talk/tree/master/example" target="_blank">Check It Out</a></p>
+</div>
+
+<div class="row marketing">
+    <div class="col-lg-6">
+        <h4>Public Repos</h4>
+        <ul>
+            <?php foreach ($repositories as $repo): ?>
+            <li><a href="<?= $this->e($repo['html_url']) ?>"><?= $this->e($repo['full_name']) ?></a></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+
+    <div class="col-lg-6">
+        <h4>Followers</h4>
+        <p class="followers">
+            <?php foreach ($followers as $user): ?>
+            <a href="<?= $this->e($user['html_url']) ?>"><img
+                src="<?= $this->e($user['avatar_url']) ?>"
+                alt="<?= $this->e($user['login']) ?>"
+                class="rounded float-left"/></a>
+            <?php endforeach; ?>
+        </p>
+    </div>
+</div>

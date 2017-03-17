@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Demo\Profile;
+namespace Demo\Login;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\StreamFactoryInterface;
 use League\Plates\Engine as Plates;
 use Psr\Http\Message\ResponseInterface;
 
-class ProfileView
+class LoginView
 {
     /**
      * @var ResponseFactoryInterface
@@ -20,6 +20,11 @@ class ProfileView
      */
     private $streamFactory;
 
+    /**
+     * @var Plates
+     */
+    private $templates;
+
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         StreamFactoryInterface $streamFactory,
@@ -30,14 +35,16 @@ class ProfileView
         $this->templates = $templates;
     }
 
-    public function render(array $repositories, array $followers): ResponseInterface
+    public function showLogin(): ResponseInterface
     {
-        $content = $this->templates->render('profile', [
-            'repositories' => $repositories,
-            'followers' => $followers,
-        ]);
-
+        $content = $this->templates->render('login');
         $body = $this->streamFactory->createStream($content);
         return $this->responseFactory->createResponse()->withBody($body);
+    }
+
+    public function redirectTo(string $target): ResponseInterface
+    {
+        return $this->responseFactory->createResponse(302)
+            ->withHeader('Location', $target);
     }
 }

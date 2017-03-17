@@ -1,10 +1,23 @@
 <?php
 
+if (php_sapi_name() == 'cli-server') {
+    if (preg_match('/\.(?:png|jpg|gif|css|js)$/', $_SERVER['REQUEST_URI'])) {
+        // This request cannot be handled by PHP, stream the output.
+        return false;
+    }
+}
+
+// Start a session
+session_start();
+
 // In your own application, this would probably be:
 require __DIR__ . '/../vendor/autoload.php';
 
 // Activate exception handler.
 require __DIR__ . '/../config/errors.php';
+
+// Load additional ENV secrets.
+require __DIR__ . '/../config/env.php';
 
 // Activate dependency injection.
 $injector = require __DIR__ . '/../config/injector.php';
