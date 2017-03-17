@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Cove\Example\Welcome;
+namespace Demo\Profile;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
 use Interop\Http\Factory\StreamFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class WelcomeView
+class ProfileView
 {
     /**
      * @var ResponseFactoryInterface

@@ -1,33 +1,34 @@
-# Cove
+# MVC Examples
 
-A minimalist PHP framework built modern standards. Makes use of:
+Examples for the talk [MVC to ADR](https://github.com/shadowhand/mvc-to-adr-talk):
 
-- [auryn](https://github.com/rdlowrey/auryn) dependency injection
-- [fast-route](https://github.com/nikic/FastRoute) regular expression router
-- [PSR-7](http://www.php-fig.org/psr/psr-7/) HTTP messages
-- [PSR-17](https://github.com/php-fig/fig-standards/blob/master/proposed/http-factory/http-factory-meta.md) HTTP factories
+- Github login via [oauth2-github](https://github.com/thephpleague/oauth2-github)
+- Show a list of followers
+- Show a your stars
 
-## Installation
+## Using
 
-```bash
-composer require cove/cove
+Install all dependencies:
+
+```php
+composer install
 ```
 
-You will also need to install:
+[Register a new application](https://github.com/settings/applications/new) and copy
+the Client ID and Secret into a `.env` file:
 
-- a [`psr/http-message-implementation`](https://packagist.org/providers/psr/http-message-implementation)
-- a [`psr/http-factory-implementation`](https://packagist.org/providers/psr/http-factory-implementation)
-
-If you are not sure what that means:
-
-```bash
-composer require zendframework/zend-diactoros
-composer require http-interop/http-factory-diactoros
+```
+GITHUB_CLIENT_ID=abc
+GITHUB_CLIENT_SECRET=xyz
 ```
 
-## Usage
+Start a local development server:
 
-See [example](example) directory.
+```php
+php -S localhost:8000 -t public public/index.php
+```
+
+Open <http://localhost:8000/> and login.
 
 ## License
 

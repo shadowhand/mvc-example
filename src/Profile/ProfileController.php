@@ -1,28 +1,28 @@
 <?php
 declare(strict_types=1);
 
-namespace Cove\Example\Welcome;
+namespace Demo\Profile;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class WelcomeController
+class ProfileController
 {
     /**
-     * @var WelcomeView
+     * @var ProfileView
      */
-    private $responder;
+    private $view;
 
     public function __construct(
-        WelcomeView $responder
+        ProfileView $view
     ) {
-        $this->responder = $responder;
+        $this->view = $view;
     }
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
         $name = $request->getAttribute('name', 'world');
 
-        return $this->responder->sayHello($name);
+        return $this->view->sayHello($name);
     }
 }

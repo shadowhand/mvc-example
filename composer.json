@@ -15,27 +15,18 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.1",
-        "http-interop/http-factory": "^0.2.0",
-        "nikic/fast-route": "^1.2",
-        "php-fp/php-fp-either": "^1.0",
-        "rdlowrey/auryn": "^1.4"
-    },
-    "require-dev": {
-        "eloquent/phony": "^0.14.6",
         "filp/whoops": "^2.1",
         "http-interop/http-factory-diactoros": "^0.2.0",
+        "http-interop/response-sender": "^1.0",
+        "rdlowrey/auryn": "^1.4",
+        "shadowhand/either-way": "^1.0"
+    },
+    "require-dev": {
         "phpunit/phpunit": "^5.6"
     },
     "autoload": {
-        "files": ["src/functions.php"],
         "psr-4": {
-            "Cove\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Cove\\": "tests/",
-            "Cove\\Example\\": "example/src/"
+            "Demo\\": "src/"
         }
     }
 }
