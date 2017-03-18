@@ -22,6 +22,7 @@
         "josegonzalez/dotenv": "^3.0",
         "league/oauth2-github": "^2.0",
         "league/plates": "^3.3",
+        "league/tactician": "^1.0",
         "rdlowrey/auryn": "^1.4",
         "shadowhand/either-way": "^1.0"
     },

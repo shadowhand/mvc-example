@@ -3,49 +3,57 @@ declare(strict_types=1);
 
 namespace Demo\Login;
 
+use Demo\Domain\FetchTokenCommand;
 use Equip\SessionInterface;
-use League\OAuth2\Client\Provider\Github;
 use League\OAuth2\Client\Token\AccessToken;
+use League\Tactician\CommandBus;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class LoginCompleteController
 {
     /**
-     * @var LoginView
+     * @var CommandBus
      */
-    private $view;
-
-    /**
-     * @var Github
-     */
-    private $github;
+    private $bus;
 
     /**
      * @var SessionInterface
      */
     private $session;
 
+    /**
+     * @var LoginView
+     */
+    private $view;
+
     public function __construct(
-        LoginView $view,
-        Github $github,
-        SessionInterface $session
+        CommandBus $bus,
+        SessionInterface $session,
+        LoginView $view
     ) {
-        $this->view = $view;
-        $this->github = $github;
+        $this->bus = $bus;
         $this->session = $session;
+        $this->view = $view;
     }
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        // https://github.com/thephpleague/oauth2-github#authorization-code-flow
         $code = $this->authCode($request);
+        $state = $this->authState();
 
-        if (empty($code)) {
+        if (empty($code) || empty($state)) {
             return $this->view->redirectTo('/login');
         }
 
-        $token = $this->accessToken($code);
+        $command = FetchTokenCommand::forCode($code, $state);
+        $token = $this->bus->handle($command);
+
+        return $this->finish($token);
+    }
+
+    private function finish(AccessToken $token): ResponseInterface
+    {
         $this->session->set('github-token', json_encode($token));
 
         return $this->view->redirectTo('/');
@@ -59,14 +67,8 @@ class LoginCompleteController
         return $params['code'] ?? null;
     }
 
-    private function accessToken(string $code): AccessToken
+    private function authState(): ?string
     {
-        $params = [
-            'code' => $code,
-            'state' => $this->session->get('oauth-state'),
-        ];
-
-        return $this->github->getAccessToken('authorization_code', $params);
+        return $this->session->get('oauth-state');
     }
-
 }

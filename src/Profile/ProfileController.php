@@ -5,15 +5,14 @@ namespace Demo\Profile;
 
 use Equip\SessionInterface;
 use Demo\Authorization;
-use League\OAuth2\Client\Provider\Github;
-use League\OAuth2\Client\Tool\QueryBuilderTrait;
+use Demo\Domain\FetchFollowersCommand;
+use Demo\Domain\FetchRepositoriesCommand;
+use League\Tactician\CommandBus;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class ProfileController
 {
-    use QueryBuilderTrait;
-
     /**
      * @var Authorization
      */
@@ -30,20 +29,20 @@ class ProfileController
     private $session;
 
     /**
-     * @var Github
+     * @var CommandBus
      */
-    private $github;
+    private $bus;
 
     public function __construct(
         Authorization $auth,
         ProfileView $view,
         SessionInterface $session,
-        Github $github
+        CommandBus $bus
     ) {
         $this->auth = $auth;
         $this->view = $view;
         $this->session = $session;
-        $this->github = $github;
+        $this->bus = $bus;
     }
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
@@ -53,10 +52,14 @@ class ProfileController
         }
 
         $token = $this->token();
-        $repositories = $this->repositories($token);
-        $followers = $this->followers($token);
 
-        return $this->view->render($repositories, $followers);
+        $repositories = FetchRepositoriesCommand::forToken($token);
+        $followers = FetchFollowersCommand::forToken($token);
+
+        return $this->view->render(
+            $this->bus->handle($repositories),
+            $this->bus->handle($followers)
+        );
     }
 
     private function token(): string
@@ -65,41 +68,5 @@ class ProfileController
         $token = json_decode($token, true);
 
         return $token['access_token'];
-    }
-
-    private function followers(string $token): array
-    {
-        $url = $this->github->apiDomain . '/user/followers';
-
-        $request = $this->github->getAuthenticatedRequest('GET', $url, $token);
-        $response = $this->github->getParsedResponse($request);
-
-        return $response;
-    }
-
-    private function repositories(string $token): array
-    {
-        $params = [
-            'visibility' => 'public',
-            'affiliation' => 'owner',
-        ];
-
-        $url = $this->github->apiDomain . '/user/repos?' . $this->buildQueryString($params);
-
-        $request = $this->github->getAuthenticatedRequest('GET', $url, $token);
-        $response = $this->github->getParsedResponse($request);
-
-        return $this->filterRepositories($response);
-    }
-
-    private function filterRepositories(array $repos): array
-    {
-        return array_map(static function ($repo) {
-            return array_intersect_key($repo, array_flip([
-                'id',
-                'full_name',
-                'html_url',
-            ]));
-        }, $repos);
     }
 }

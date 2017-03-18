@@ -3,49 +3,55 @@ declare(strict_types=1);
 
 namespace Demo\Login;
 
+use Demo\Domain\LoginCommand;
+use Demo\Domain\LoginState;
 use Equip\SessionInterface;
-use League\OAuth2\Client\Provider\Github;
+use League\Tactician\CommandBus;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class LoginBeginController
 {
     /**
-     * @var LoginView
+     * @var CommandBus
      */
-    private $view;
-
-    /**
-     * @var Github
-     */
-    private $github;
+    private $bus;
 
     /**
      * @var SessionInterface
      */
     private $session;
 
+    /**
+     * @var LoginView
+     */
+    private $view;
+
+
     public function __construct(
-        LoginView $view,
-        Github $github,
-        SessionInterface $session
+        CommandBus $bus,
+        SessionInterface $session,
+        LoginView $view
     ) {
-        $this->view = $view;
-        $this->github = $github;
+        $this->bus = $bus;
         $this->session = $session;
+        $this->view = $view;
     }
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        // https://github.com/thephpleague/oauth2-github#authorization-code-flow
-        $target = $this->github->getAuthorizationUrl([
-            'redirect_uri' => $this->loginCompleteUrl($request),
-            'scope' => $this->scopes(),
-        ]);
+        $url = $this->loginCompleteUrl($request);
+        $login = LoginCommand::forUser($url);
+        $state = $this->bus->handle($login);
 
-        $this->session->set('oauth-state', $this->github->getState());
+        return $this->finish($state);
+    }
 
-        return $this->view->redirectTo($target);
+    private function finish(LoginState $login): ResponseInterface
+    {
+        $this->session->set('oauth-state', $login->state());
+
+        return $this->view->redirectTo($login->url());
     }
 
     private function loginCompleteUrl(ServerRequestInterface $request): string
@@ -59,10 +65,5 @@ class LoginBeginController
             $uri->getPort(),
             $uri->getPath()
         );
-    }
-
-    private function scopes(): array
-    {
-        return ['user', 'repo'];
     }
 }
