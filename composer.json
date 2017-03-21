@@ -1,7 +1,5 @@
 {
-    "name": "cove/cove",
-    "description": "A minimalist framework built around modern standards",
-    "type": "library",
+    "type": "project",
     "license": "MIT",
     "authors": [
         {
