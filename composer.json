@@ -24,6 +24,7 @@
         "league/plates": "^3.3",
         "league/tactician": "^1.0",
         "rdlowrey/auryn": "^1.4",
+        "shadowhand/cairon": "^0.1.0",
         "shadowhand/either-way": "^1.0"
     },
     "require-dev": {
