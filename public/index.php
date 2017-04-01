@@ -10,7 +10,7 @@ if (php_sapi_name() == 'cli-server') {
 // Start a session
 session_start();
 
-// In your own application, this would probably be:
+// Activate autoloading.
 require __DIR__ . '/../vendor/autoload.php';
 
 // Activate exception handler.
@@ -21,9 +21,6 @@ require __DIR__ . '/../config/env.php';
 
 // Activate dependency injection.
 $injector = require __DIR__ . '/../config/injector.php';
-
-// Activate routing.
-$dispatcher = require __DIR__ . '/../config/routing.php';
 
 // Define how routing errors will be transformed to Response.
 $errorHandler = function (int $status) use ($injector): Psr\Http\Message\ResponseInterface {
@@ -39,11 +36,8 @@ $successHandler = function (EitherWay\Route $route) use ($injector): Psr\Http\Me
     return $response;
 };
 
-// Parse the incoming request.
-$request = $injector->make(Psr\Http\Message\ServerRequestInterface::class);
-
 // Route the request and get the error or success.
-$response = EitherWay\dispatch($request, $dispatcher)->either($errorHandler, $successHandler);
+$response = $injector->execute('EitherWay\dispatch')->either($errorHandler, $successHandler);
 
 // fin.
 Http\Response\send($response);
