@@ -5,7 +5,7 @@ Examples for the talk [MVC to ADR](https://github.com/shadowhand/mvc-to-adr-talk
 - Github login via [oauth2-github](https://github.com/thephpleague/oauth2-github)
 - Show a list of your repos
 - Show a list of your followers
-- **todo** Show a list of your stars
+- Show a list of your stars
 
 ## Using
 

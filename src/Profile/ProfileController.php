@@ -7,6 +7,7 @@ use Equip\SessionInterface;
 use Demo\Authorization;
 use Demo\Domain\FetchFollowersCommand;
 use Demo\Domain\FetchRepositoriesCommand;
+use Demo\Domain\FetchStarsCommand;
 use League\Tactician\CommandBus;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -55,10 +56,12 @@ class ProfileController
 
         $repositories = FetchRepositoriesCommand::forToken($token);
         $followers = FetchFollowersCommand::forToken($token);
+        $stars = FetchStarsCommand::forToken($token);
 
         return $this->view->render(
             $this->bus->handle($repositories),
-            $this->bus->handle($followers)
+            $this->bus->handle($followers),
+            $this->bus->handle($stars)
         );
     }
 
