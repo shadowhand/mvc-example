@@ -15,8 +15,13 @@ Install all dependencies:
 composer install
 ```
 
-[Register a new application](https://github.com/settings/applications/new) and copy
-the Client ID and Secret into a `.env` file:
+[Register a new application](https://github.com/settings/applications/new) with
+the following settings:
+
+- Homepage URL: `http://localhost:8000/`
+- Authorization callback URL: `http://localhost:8000/login/complete`
+
+Then copy the Client ID and Secret into a `.env` file:
 
 ```
 GITHUB_CLIENT_ID=abc
