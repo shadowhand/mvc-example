@@ -30,11 +30,12 @@ class ProfileView
         $this->templates = $templates;
     }
 
-    public function render(array $repositories, array $followers): ResponseInterface
+    public function render(array $repositories, array $followers, array $stars): ResponseInterface
     {
         $content = $this->templates->render('profile', [
             'repositories' => $repositories,
             'followers' => $followers,
+            'stars' => $stars,
         ]);
 
         $body = $this->streamFactory->createStream($content);
